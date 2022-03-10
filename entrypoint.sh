@@ -7,6 +7,7 @@ fi
 
 setup_git() {
   if [ -f "$HOME/.ssh/id_rsa" ]; then
+    echo "[+] Fixing ssh key permissions"
     # This is required because Kubernetes secret mounts can't
     # have file permissions set
     chmod 0400 "$HOME/.ssh/id_rsa"
@@ -48,9 +49,9 @@ case $1 in
       echo "[E] GIT_REMOTE_URL not set"
       exit 1
     else
-      git clone --branch "$BRANCH" "$GIT_REMOTE_URL" "$old_git_dir"
       setup_git
       update_git_config
+      git clone --branch "$BRANCH" "$GIT_REMOTE_URL" "$old_git_dir"
       echo "[+] Exporting data from Outline"
       bundle exec outliner-export "$fresh_export_dir"
       echo "[+] Resetting git repository"
